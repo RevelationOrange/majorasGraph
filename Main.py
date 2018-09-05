@@ -30,17 +30,51 @@ def main():
             ItemSpot('don gero frog', [lambda world: world.canBeLink(), lambda world: world.haveItem('donGero')])
         ]),
         Location('west clock town', 'clock town', [
-            Exit('s door', 'curiosity shop'),
-            Exit('ssw door', 'trading post'),
+            Exit('s door', 'curiosity shop', [lambda world: (world.time.between(16, 24) or world.time.between(40, 48) or world.time.atLeast(64))]),
+            Exit('ssw door', 'trading post', [lambda world: (not (world.time.between(15, 16) or world.time.between(39, 40) or world.time.between(63, 64)))]),
             Exit('sw door', 'clock town bomb shop'),
-            Exit('w', 'termina field'),
+            Exit('w', 'termina field', [lambda world: world.canLeaveClockTown()]),
             Exit('nw door', 'sword school'),
-            Exit('ne door', 'post office'),
+            Exit('ne door', 'post office', [lambda world: (world.time.between(9, 18) or world.time.between(33, 42))]),
             Exit('ne', 'south clock town'),
             Exit('se', 'south clock town')
+        ], [
+            ItemSpot('rosa sisters hp', [lambda world: world.haveItem('kamaro')]),
+            ItemSpot('adult wallet from bank'),
+            ItemSpot('5k rupee hp from bank')
         ]),
+        Location('north clock town', 'clock town', [
+            Exit('sw', 'deku scrub playground'),  # assumption here, that you can always access this. probly fair?
+            Exit('w', 'clock town great fairy'),
+            Exit('n', 'termina field', [lambda world: world.canLeaveClockTown()]),
+            Exit('e', 'east clock town'),
+            Exit('s', 'south clock town')
+        ], [
+            ItemSpot('bombers notebook', [lambda world: world.canBeLink()]),
+            ItemSpot('blast mask', [lambda world: world.canBeLink(), lambda world: world.time.between(24, 24.5)]),
+            ItemSpot('tree hp'),
+            # ItemSpot('tingle clock town map'), # not exactly sure how to deal with these, they might be rando'd,
+            # ItemSpot('tingle woodfall map'),   # might not; if rando'd, must be changed in both places they appear
+            ItemSpot('keaton hp')  # this might be global too? gotta figure out a way to track that
+        ]),
+        Location('east clock town', 'clock town', [
+            # Exit(),
+        ])
     ]
     checkNames(locs)
+    checkMade(locs)
+
+
+def checkMade(locs):
+    made = []
+    exitsSansLocs = []
+    for l in locs:
+        made.append(l.name)
+    for l in locs:
+        for e in l.exits:
+            if e.to not in made and e.to not in exitsSansLocs:
+                exitsSansLocs.append(e.to)
+    print('next up:', exitsSansLocs)
 
 
 def checkNames(locs):
