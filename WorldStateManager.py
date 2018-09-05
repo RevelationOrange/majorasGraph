@@ -2,6 +2,8 @@ class WorldStateManager:
     def __init__(self):
         self.inventory = []
         self.knownTricks = {}
+        self.earliest = 0
+        self.latest = 72
         self.worldState = {
             'cycle': 0,
             'clockTownDekuFlowerOpen': False,
@@ -12,6 +14,9 @@ class WorldStateManager:
         return i in self.inventory
 
     def canBeLink(self):
+        # there's an assumption here that's it not randomized that you can take off your initial mask to become link
+        # after the first cycle
+        # probly a safe assumption, but this check will need to be changed if it's not
         return self.worldState['cycle'] > 0
 
     def canLeaveClockTown(self):
@@ -30,3 +35,19 @@ class WorldStateManager:
             if item == 'goron':
                 maxH = max(maxH, 2)
         return height < maxH
+
+    class timeObj(object):
+        def __init__(self):
+            self.earliest = 0
+
+        def isFirstNight(self):
+            return self.earliest < 24
+
+        def isSecondNight(self):
+            return self.earliest < 48
+
+        def atLeast(self, x):
+            return True
+
+        def between(self, x, y):
+            return self.earliest < y
