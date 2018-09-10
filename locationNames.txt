@@ -16,3 +16,5 @@ deku scrub playground
 clock town great fairy
 maze minigame
 stock pot inn
+mayor residence
+bomber hideout

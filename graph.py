@@ -19,21 +19,20 @@ class Location(object):
 
 
 class Gate(object):
-    def __init__(self, name, tests=()):
+    def __init__(self, name, accessTest=None):
         self.name = name
-        self.tests = tests
+        self.accessTest = accessTest
 
 
 class Exit(Gate):
-    def __init__(self, name, goesTo, tests=(), bypass=()):
-        super().__init__(name, tests)
+    def __init__(self, name, goesTo, accessTest=None):
+        super().__init__(name, accessTest)
         self.to = goesTo
-        self.bypass = bypass
 
 
 class ItemSpot(Gate):
-    def __init__(self, name, tests=()):
-        super().__init__(name, tests)
+    def __init__(self, name, accessTest=None):
+        super().__init__(name, accessTest)
         self.contains = None
 
     def putItem(self, i):
@@ -41,6 +40,10 @@ class ItemSpot(Gate):
 
     def removeItem(self):
         self.contains = None
+
+    def setTest(self, f):
+        self.accessTest = f
+        return self
 
 
 class Item(object):
@@ -90,6 +93,11 @@ class Item(object):
         'bremen',
         'bunny',
         'donGero',
+        'donGeroFrog0',
+        'donGeroFrog1',
+        'donGeroFrog2',
+        'donGeroFrog3',
+        'donGeroFrog4',
         'scents',
         'goron',
         'romani',
@@ -107,4 +115,8 @@ class Item(object):
     }
 
     def __init__(self, i, q=1):
-        pass
+        if i in Item.itemObjs:
+            self.what = i
+            # self.type = Item.itemObjs[i]
+        else:
+            raise Exception('no such item')
